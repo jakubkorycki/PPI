@@ -36,10 +36,7 @@ lons = lonLim(1):lonLim(3):lonLim(2);
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
 
 %% Reference Model
-G = 6.6743e-11;
-R_ref = 2440e3;
-M_mercury = 3.285e23;
-g_ref = G*M_mercury/R_ref^2;
+g_ref = Model.GM/Model.Re^2;
 
 gravity_ref = readmatrix('cleaned_gsh.csv', OutputType='double');
 Lmax_ref = max(gravity_ref(:,1));
