@@ -1,75 +1,70 @@
-function PlanetaryModel(Delta_bd)
+HOME = pwd;
+ModelNew = struct();
 
-    Delta_bd = 'NA';
-    close all;
+% SETUP MODEL FOR MERCURY
+Model.number_of_layers = 2;
+Model.name = 'Mercury_Crust_2L';
+delta_bd = 1000;
 
-    HOME = pwd;
-    Model = struct();
-    
-    Model.number_of_layers = 2;
-    Model.name = 'Mercury_Crust_2L';
-    
-    % Additional variables
-    G = 6.6743e-11;
-    M_p = 0.330103e24; %+-0.000021e24
-    R_p = 2439.4e3; %+-0.1
-    
-    Model.GM = G * M_p;
-    Model.Re_analyse = R_p;
-    Model.Re = R_p;
-    Model.geoid = 'none';
-    Model.nmax = 49;     
-    Model.correct_depth = 0;
-    
-    % % Topo layer
-    Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd.gmt'];
-    %Model.l1.bound = [HOME '/GSH/Data/MarsCrust/crust1.bd1.gmt'];
-    %visual_gmtfile(Model.l1.bound,'km','block');
-    Model.l1.dens  = [HOME '/GSH/Data/MercuryCrust/crust_rho.gmt'];
-    %Model.l1.dens  = [HOME '/GSH/Data/MarsCrust/crust1.rho1.gmt'];
-    %visual_gmtfile(Model.l1.dens,'kg/m3','block');
-    % %Model.l1.alpha = 
+% Additional variables
+G = 6.6743e-11;
+M_p = 0.330103e24; %+-0.000021e24
+R_p = 2439.4e3; %+-0.1
 
-    % Bath layer
-    Model.l2.bound = [HOME '/GSH/Data/MercuryCrust/mantle_bd.gmt'];
-    %Model.l2.bound = [HOME '/GSH/Data/MarsCrust/crust1.bd2.gmt'];
-    %visual_gmtfile(Model.l2.bound,'km','block');
-    %Model.l2.dens  = [HOME '/GSH/Data/MercuryCrust/mantle_rho.gmt'];
-    Model.l2.dens  = [HOME '/GSH/Data/MarsCrust/crust1.rho2.gmt'];
-    %visual_gmtfile(Model.l2.dens,'kg/m3','block');
-    % %Model.l2.alpha = 
-    
-    % % Bottom
-    Model.l3.bound = [HOME '/GSH/Data/MercuryCrust/outercore_rho.gmt'];
+Model.GM = G * M_p;
+Model.Re_analyse = R_p;
+Model.Re = R_p;
+Model.geoid = 'none';
+Model.nmax = 49;     
+Model.correct_depth = 0;
 
-    % Alter layer thickness
+% IMPORT AND VERIFY
+% % Topo layer
+Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd.gmt'];
+Model.l1.dens  = [HOME '/GSH/Data/MercuryCrust/crust_rho.gmt'];
+% %Model.l1.alpha = 
+%visual_gmtfile(Model.l1.bound,'km','block');
 
-    file_type = 'block';
-    d = load(Model.l1.bound);
-    
-    if strcmp(file_type,'block')
-        [A,Lon,Lat] = gmt2matrix(d);
-    elseif strcmp(file_type,'gauss')
-        [A,Lon,Lat] = gmt2matrix_gauss(d);
-    else
-        error('File type must be string: block or gauss')
-    end
+% Bath layer
+Model.l2.bound = [HOME '/GSH/Data/MercuryCrust/mantle_bd.gmt'];
+Model.l2.dens  = [HOME '/GSH/Data/MercuryCrust/mantle_rho.gmt'];
+% %Model.l2.alpha = 
+%visual_gmtfile(Model.l2.bound,'km','block');
 
-    if Delta_bd == 'NA'
-        Delta_bd = zeros(size(A),'like',A);
-    end
-    Delta_bd = Delta_bd + 1000; % TEST ONLY
+% % Bottom
+Model.l3.bound = [HOME '/GSH/Data/MercuryCrust/outercore_rho.gmt'];
 
-    A_new = A + Delta_bd;
-    newbound = matrix2gmt(A_new,Lon,Lat);
-    
-    % save
-    save([HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'],'newbound',"-ascii");
-    save([HOME '/GSH/Results/' Model.name '.mat'],'Model');
-
-    % check change
-    Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'];
-    %Model.l1.bound = [HOME '/GSH/Data/MarsCrust/crust1.bd1.gmt'];
-    visual_gmtfile(Model.l1.bound,'km','block');
-    
+% MODIFY BOUNDARY HEIGHT
+% file structure
+file_type = 'block';
+d = load(Model.l1.bound);
+% make gmt editable
+if strcmp(file_type,'block')
+    [A,Lon,Lat] = gmt2matrix(d);
+elseif strcmp(file_type,'gauss')
+    [A,Lon,Lat] = gmt2matrix_gauss(d);
+else
+    error('File type must be string: block or gauss')
 end
+% create delta vector from scalar
+Delta_bd = zeros(size(A),'like',A) + delta_bd;
+
+% create test layers for +- delta
+bound_low = matrix2gmt(A - Delta_bd,Lon,Lat);
+bound_high = matrix2gmt(A + Delta_bd,Lon,Lat);
+
+% update layer with new fit
+if exist('ModelFit_bd','var') % handle initial case
+    bound_new = matrix2gmt(A,Lon,Lat);
+else
+    bound_new = matrix2gmt(A + ModelFit_bd,Lon,Lat);
+end
+
+% save
+save([HOME '/GSH/Data/MercuryCrust/crust_bd_low.gmt'],'bound_low',"-ascii");
+save([HOME '/GSH/Data/MercuryCrust/crust_bd_high.gmt'],'bound_high',"-ascii");
+save([HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'],'bound_new',"-ascii");
+
+% check change
+Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'];
+save([HOME '/GSH/Results/' Model.name '_new.mat'],'Model');

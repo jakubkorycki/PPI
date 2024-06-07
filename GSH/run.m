@@ -12,7 +12,7 @@ HOME = pwd;
 %load(model_name);
 
 % Construct new model
-PlanetaryModel('NA')
+inputModel
 
 %%%%%%%%%%%%%%%%%%% Computation area %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
@@ -30,7 +30,7 @@ tic;
 [V] = model_SH_analysis(Model);
 toc
 
-save(['Results/' Model.name '.mat'],'V')
+save([HOME '/GSH/Results/' Model.name '_V.mat'],'V')
 
 %% Global Spherical Harmonic Synthesis
 
@@ -40,5 +40,4 @@ toc
 
 %% Save data
 
-DATE = datestr(now);
-save(['Results/data_' Model.name '_' num2str(SHbounds(1)) '_' num2str(SHbounds(2)) '_' DATE '.mat'],'data')
+save([HOME '/GSH/Results/' Model.name '_' num2str(SHbounds(1)) '_' num2str(SHbounds(2)) '_data.mat'],'data')
