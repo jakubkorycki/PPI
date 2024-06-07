@@ -4,8 +4,6 @@ close all;
 clc;
 
 HOME = pwd;
-addpath([HOME '/Data']);
-addpath([HOME '/Tools']);
 
 % Model
 % Load previous saved model
@@ -14,7 +12,7 @@ addpath([HOME '/Tools']);
 %load(model_name);
 
 % Construct new model
-inputModel    
+PlanetaryModel('NA')
 
 %%%%%%%%%%%%%%%%%%% Computation area %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%

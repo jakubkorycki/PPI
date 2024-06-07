@@ -25,17 +25,17 @@ end
 
 B = Europe_centered(A);
 
-lon = Lon(1,:);
+lons = Lon(1,:);
 lats = Lat(:,1);
-lon = lon - 180;
+lons = lons - 180;
 
-load coast;
+%load coast;
 
 figure;
 hold on
-imagesc(lon,lats,(B));c=colorbar; 
-plot(long,lat,'k');
-xlim([min(lon) max(lon)])
+imagesc(lons,lats,(B));c=colorbar; 
+plot(Lon,Lat,'k');
+xlim([min(lons) max(lons)])
 ylim([min(lats) max(lats)])
 hold off
 title(['Visualization of ' filename])

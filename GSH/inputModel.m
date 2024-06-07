@@ -1,9 +1,3 @@
-% This is an input file for the GSHA procedure
-%
-% It should contain a list of names and location of geometry boundaries followed by a
-% list of names for density values
-% 
-% Single values for density files are allowed.
 HOME = pwd;
 Model = struct();
 
