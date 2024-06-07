@@ -3,7 +3,7 @@ close all;
 clc;
 
 HOME = pwd;
-filename = 'Data/MercuryTopo/MSGR_DEM_USG_SC_I_V02.IMG';
+filename = 'GSH/Data/MercuryTopo/MSGR_DEM_USG_SC_I_V02.IMG';
 resolution = 64;
 
 % Read in the file.

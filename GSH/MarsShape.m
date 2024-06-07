@@ -2,7 +2,7 @@ clear;
 close all;
 clc;
 
-filename = 'mega90n000cb.img';
+filename = '../Data/MarsTopo/mega90n000cb.img';
 resolution = 4;
 
 % Read in the file.
