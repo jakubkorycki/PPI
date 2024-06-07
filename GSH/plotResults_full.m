@@ -5,7 +5,7 @@ clc;
 
 %% tutorial data
 %%% insert output data file from Results here!!!%%%
-load('Results/data_Crust10_crust_3_179_26-Mar-2019 13:14:45.mat')
+load('Results/Mercury_Crust_2L.mat')
 
 %% plot different maps of the data
 lon = data.grd.lon(1,:);

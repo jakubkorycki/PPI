@@ -3,6 +3,12 @@ clear;
 close all;
 clc;
 
+addpath('data\')
+addpath('GSH\')
+addpath('GSH\Data')
+addpath('GSH\Tools')
+addpath('GSH\Results')
+
 HOME = pwd;
 
 % Model
@@ -23,9 +29,24 @@ lonLim =    [-180 180 1];% [deg] min longitude, max longitude, resolution longit
 height =    0.0; % height of computation above spheroid
 SHbounds =  [0 49]; % Truncation settings: lower limit, upper limit SH-coefficients used
 
+
+lats = fliplr(latLim(1):latLim(3):latLim(2));
+lons = lonLim(1):lonLim(3):lonLim(2);
+
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
 
 %% Reference Model
+g_ref = Model.GM/Model.Re^2;
+
+gravity_ref = readmatrix('cleaned_gsh.csv', OutputType='double');
+Lmax_ref = max(gravity_ref(:,1));
+clm_ref = gravity_ref(:, 1:4);
+
+sc_ref = clm2sc(clm_ref); % Convert coeffs from vec to /S|C\ Triangle
+
+gravity_map_norm = GSHS(sc_ref, lons, 90-lats, Lmax_ref);
+% gravity_map = (1+gravity_map_norm) * g_ref;
+gravity_anomaly_map = gravity_map_norm * g_ref;
 
 
 %% Global Spherical Harmonic Analysis 
