@@ -108,7 +108,7 @@ end
 
 
 if isfield(params,'sub_wgs84') == 0
-    params.sub_wgs84 = false
+    params.sub_wgs84 = false;
 end
 if islogical(params.sub_wgs84)== false
     switch params.sub_wgs84 
