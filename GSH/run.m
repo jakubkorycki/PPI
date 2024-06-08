@@ -12,7 +12,7 @@ HOME = pwd;
 %load(model_name);
 
 % Construct new model
-Model_1
+Model_3
 
 %%%%%%%%%%%%%%%%%%% Computation area %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%

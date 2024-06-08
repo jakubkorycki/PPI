@@ -5,7 +5,7 @@ clc;
 
 %% tutorial data
 %%% insert output data file from Results here!!!%%%
-load('Results/Model_1_0_160_data.mat')
+load('Results/Model_3_0_160_data.mat')
 
 %% plot different maps of the data
 lon = data.grd.lon(1,:);

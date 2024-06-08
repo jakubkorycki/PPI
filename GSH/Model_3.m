@@ -22,7 +22,7 @@ Model.l1.dens  = 2540;
 % visual_gmtfile(Model.l1.bound,'km','block');
 
 % Bath layer
-Model.l2.bound = 'crust_lower_bd_2.gmt';
+Model.l2.bound = 'GSH\Data\Model3\crust_lower_bd_3.gmt';
 Model.l2.dens  = 3350;
 % visual_gmtfile(Model.l2.bound,'km','block');
 
