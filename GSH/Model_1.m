@@ -6,7 +6,7 @@ Model.name = 'Model_1';
 
 G = 6.6743e-11;
 M_p = 0.330103e24; %+-0.000021e24
-R_p = 2439.4e3; %+-0.1
+R_p = 2440e3; %+-0.1
 
 % Additional variables
 Model.GM = G*M_p;
