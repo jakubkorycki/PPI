@@ -17,7 +17,6 @@ HOME = pwd;
 %load(model_name);
 
 % Construct new model
-disp("Planetary Model");
 ModelFit_bd = 0;
 PlanetaryModel
 
@@ -36,7 +35,6 @@ lons = lonLim(1):lonLim(3):lonLim(2);
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
 
 %% Reference Model
-disp("Reference Model");
 RefModel
 
 %% Global Spherical Harmonic Analysis 
@@ -57,21 +55,18 @@ Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_low.gmt'];
 toc
 
 % high
-disp("GSHA high");
 tic;
 Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_high.gmt'];
 [V_high] = model_SH_analysis(Model);
 toc
 
 %% Error between ModelNew and Reference
-disp("Delta V");
 V_residual = V_ref - V_new;
 V_residual(:,1:2) = V_ref(:,1:2);
 
 %% Global Spherical Harmonic Synthesis
 
 % new
-disp("GSHS residual");
 tic;
 Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'];
 [data] = model_SH_synthesis(lonLim,latLim,height,SHbounds,V_residual,Model);

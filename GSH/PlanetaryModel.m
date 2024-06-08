@@ -1,5 +1,7 @@
 HOME = pwd;
-ModelNew = struct();
+Model = struct();
+
+ModelFit_bd = 0; % TEST ONLY
 
 % SETUP MODEL FOR MERCURY
 Model.number_of_layers = 2;
@@ -15,7 +17,7 @@ Model.GM = G * M_p;
 Model.Re_analyse = R_p;
 Model.Re = R_p;
 Model.geoid = 'none';
-Model.nmax = 49;     
+Model.nmax = 160; %160
 Model.correct_depth = 0;
 
 % IMPORT AND VERIFY
@@ -38,6 +40,7 @@ Model.l3.bound = [HOME '/GSH/Data/MercuryCrust/outercore_rho.gmt'];
 % file structure
 file_type = 'block';
 d = load(Model.l1.bound);
+
 % make gmt editable
 if strcmp(file_type,'block')
     [A,Lon,Lat] = gmt2matrix(d);
@@ -68,3 +71,4 @@ save([HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'],'bound_new',"-ascii");
 % check change
 Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'];
 save([HOME '/GSH/Results/' Model.name '_new.mat'],'Model');
+visual_gmtfile(Model.l1.bound,'km','block');
