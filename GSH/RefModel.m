@@ -10,6 +10,8 @@ R_p = 2439.4e3; %+-0.1
 
 % Crust Data
 rho_crust = 3100;
+rho_mantle = 3307.6;
+D_ref = 125e3; % Reference crustal thickness in meters
 
 % others
 R_ref = R_p;
@@ -59,7 +61,6 @@ colorbar;
 xlabel('Longitude (\circ)')
 ylabel('Latitude (\circ)')
 set(gca, 'YDir', 'normal')
-
 
 % Load topography
 filename = [HOME '/GSH/Data/MercuryTopo/Mercury_Messenger_USGS_DEM_Global_665m_v2.tif'];

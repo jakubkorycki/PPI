@@ -71,10 +71,15 @@ V_residual(:,1:2) = V_ref(:,1:2);
 %% Global Spherical Harmonic Synthesis
 
 % new
-disp("GSHS residual");
+disp("GSHS model");
 tic;
-Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'];
-[data] = model_SH_synthesis(lonLim,latLim,height,SHbounds,V_residual,Model);
+[data] = model_SH_synthesis(lonLim,latLim,height,SHbounds,V_new,Model);
 toc
 save([HOME '/GSH/Results/' Model.name '_' num2str(SHbounds(1)) '_' num2str(SHbounds(2)) '_data.mat'],'data')
 
+% new
+disp("GSHS ref");
+tic;
+[data] = model_SH_synthesis(lonLim,latLim,height,SHbounds,V_new,Model);
+toc
+save([HOME '/GSH/Results/' Model.name '_' num2str(SHbounds(1)) '_' num2str(SHbounds(2)) '_data.mat'],'data')

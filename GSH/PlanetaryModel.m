@@ -20,6 +20,24 @@ Model.geoid = 'none';
 Model.nmax = 160; %160
 Model.correct_depth = 0;
 
+% Load topography
+filename = [HOME '/GSH/Data/MercuryTopo/Mercury_Messenger_USGS_DEM_Global_665m_v2.tif'];
+topo_map = imread(filename);
+resized_topo_map = imresize(topo_map, [size(gravity_map, 1), size(gravity_map, 2)]);
+resized_topo_map = double(resized_topo_map);
+
+% Plot topography
+figure
+imagesc(lonT,latT,resized_topo_map./1e3);cc=colorbar;
+title('Topography')
+xlabel('Longitude (\circ)','Fontsize',aa)
+ylabel('Latitude (\circ)','Fontsize',aa)
+ylabel(cc,'Topography (km)','Fontsize',aa)
+set(gca,'YDir','normal','Fontsize',aa)
+
+resized_topo_map = imresize(topo_map, [size(gravity_map, 1)/10, size(gravity_map, 2)/10]);
+resized_topo_map = double(resized_topo_map);
+
 % IMPORT AND VERIFY
 % % Topo layer
 Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd.gmt'];
@@ -50,22 +68,24 @@ else
     error('File type must be string: block or gauss')
 end
 % create delta vector from scalar
-Delta_bd = zeros(size(A),'like',A) + delta_bd;
+%Delta_bd = zeros(size(A),'like',A) + delta_bd;
 
 % create test layers for +- delta
-bound_low = matrix2gmt(A - Delta_bd,Lon,Lat);
-bound_high = matrix2gmt(A + Delta_bd,Lon,Lat);
+%bound_low = matrix2gmt(A - Delta_bd,Lon,Lat);
+%bound_high = matrix2gmt(A + Delta_bd,Lon,Lat);
 
 % update layer with new fit
-if exist('ModelFit_bd','var') % handle initial case
-    bound_new = matrix2gmt(A,Lon,Lat);
-else
-    bound_new = matrix2gmt(A + ModelFit_bd,Lon,Lat);
-end
+%if exist('ModelFit_bd','var') % handle initial case
+%    bound_new = matrix2gmt(A,Lon,Lat);
+%else
+%    bound_new = matrix2gmt(A + ModelFit_bd,Lon,Lat);
+%end
+
+bound_new = matrix2gmt(A + resized_topo_map,Lon,Lat);
 
 % save
-save([HOME '/GSH/Data/MercuryCrust/crust_bd_low.gmt'],'bound_low',"-ascii");
-save([HOME '/GSH/Data/MercuryCrust/crust_bd_high.gmt'],'bound_high',"-ascii");
+%save([HOME '/GSH/Data/MercuryCrust/crust_bd_low.gmt'],'bound_low',"-ascii");
+%save([HOME '/GSH/Data/MercuryCrust/crust_bd_high.gmt'],'bound_high',"-ascii");
 save([HOME '/GSH/Data/MercuryCrust/crust_bd_new.gmt'],'bound_new',"-ascii");
 
 % check change
