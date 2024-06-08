@@ -1,11 +1,11 @@
 % plot results
-clear;
-close all;
-clc;
+% clear;
+% close all;
+% clc;
 
 %% tutorial data
 %%% insert output data file from Results here!!!%%%
-load('Results/Model_3_0_160_data.mat')
+load('Results/Model_2_0_160_data.mat')
 
 %% plot different maps of the data
 lon = data.grd.lon(1,:);
