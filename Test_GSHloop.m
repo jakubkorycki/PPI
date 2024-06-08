@@ -5,7 +5,7 @@ clc;
 addpath('GSH/Tools/')
 
 %%
-filename = 'megt90n000cb.img';
+filename = 'GSH/Data/MarsTopo/megt90n000cb.img';
 resolution = 4;
 
 % Read in the file.

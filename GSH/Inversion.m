@@ -1,19 +1,13 @@
-% Load topography
-filename = [HOME '/GSH/Data/MercuryTopo/Mercury_Messenger_USGS_DEM_Global_665m_v2.tif'];
-topo_map = imread(filename);
-resized_topo_map = imresize(topo_map, [size(gravity_map, 1), size(gravity_map, 2)]);
-resized_topo_map = double(resized_topo_map);
-
 % Model 1: Bouguer Inversion
 deltaR1 = bouguer_anomaly/(2*pi*G*rho_crust);
 crustal_thickness_model1 = D_ref + deltaR1;
 
 figure
 imagesc(lonT, latT, deltaR1); cc=colorbar;
-title('Bouguer Inversion Model Correction')
+title('Airy Isostasy Model Correction')
 xlabel('Longitude (\circ)','Fontsize',aa)
 ylabel('Latitude (\circ)','Fontsize',aa)
-ylabel(cc,'Bouguer Correction (units?)','Fontsize',aa)
+ylabel(cc,'Isostasy Correction (units?)','Fontsize',aa)
 set(gca,'YDir','normal','Fontsize',aa)
 
 figure
