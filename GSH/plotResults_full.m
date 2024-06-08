@@ -5,7 +5,7 @@ clc;
 
 %% tutorial data
 %%% insert output data file from Results here!!!%%%
-load('Results/Mercury_Crust_2L.mat')
+load('Results/Model_2_Airy_0_160_data.mat')
 
 %% plot different maps of the data
 lon = data.grd.lon(1,:);
@@ -134,3 +134,4 @@ ylabel('Latitude [^o]')
 title(['Tyy-component of gravity gradient tensor'])
 ylabel(c,'Eotvos') 
 set(gca,'YDir','normal')
+

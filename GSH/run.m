@@ -12,7 +12,7 @@ HOME = pwd;
 %load(model_name);
 
 % Construct new model
-inputModel
+Model_2_Airy
 
 %%%%%%%%%%%%%%%%%%% Computation area %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
@@ -20,7 +20,7 @@ inputModel
 latLim =    [-89.5 89.5 1];  % [deg] min latitude, max latitude, resolution latitude (preferable similar to latitude)
 lonLim =    [-180 180 1];% [deg] min longitude, max longitude, resolution longitude (preferable similar to latitude)
 height =    225000.0; % height of computation above spheroid
-SHbounds =  [0 179]; % Truncation settings: lower limit, upper limit SH-coefficients used
+SHbounds =  [0 160]; % Truncation settings: lower limit, upper limit SH-coefficients used
 
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -29,6 +29,12 @@ SHbounds =  [0 179]; % Truncation settings: lower limit, upper limit SH-coeffici
 tic;
 [V] = model_SH_analysis(Model);
 toc
+V(1, 3)=0; % Added following the discussion forum so that only anomalies are modelled (C_00=0)
+
+[n, DV] = degreeVariance(V);
+figure
+semilogy(DV)
+
 
 save([HOME '/GSH/Results/' Model.name '_V.mat'],'V')
 

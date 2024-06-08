@@ -34,7 +34,7 @@ lons = lons - 180;
 figure;
 hold on
 imagesc(lons,lats,(B));c=colorbar; 
-plot(Lon,Lat,'k');
+% plot(Lon,Lat,'k');
 xlim([min(lons) max(lons)])
 ylim([min(lats) max(lats)])
 hold off
