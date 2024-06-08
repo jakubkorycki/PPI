@@ -12,7 +12,7 @@ HOME = pwd;
 %load(model_name);
 
 % Construct new model
-Model_2_Airy
+Model_1
 
 %%%%%%%%%%%%%%%%%%% Computation area %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
