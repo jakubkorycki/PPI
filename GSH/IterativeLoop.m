@@ -14,7 +14,7 @@ whether_to_plot = true;
 % numerical parameters
 Dr = 10e3; % km
 ITRmax = 1;
-ModelMax = 1;
+ModelMax = 3;
 
 % store results
 objective = [];
@@ -118,13 +118,6 @@ while M<ModelMax+1
             % get variance error
             V_test = sortrows([0 0 1 0; V_test(:, 1:4)],1);
             [n_test, DV_test] = degreeVariance(V_test);
-            if M==1
-                DV_1 = DV_test;
-            elseif M==2
-                DV_2 = DV_test;
-            elseif M==3
-                DV_3 = DV_test;
-            end
             
             DVerr = DV_test - DV_ref;
             OBJ = sum(DVerr);
@@ -152,6 +145,14 @@ while M<ModelMax+1
     % print out results
     disp(['Model ' num2str(M), 'results:']);
     disp(['SUM(DVerr)=' num2str(objective(end)) 'VAR=' num2str(VAR)]);
+
+    if M==1
+        DV_1 = DV_test;
+    elseif M==2
+        DV_2 = DV_test;
+    elseif M==3
+        DV_3 = DV_test;
+    end
     
     % plot gravity response
     bb = (3/2)*aa;
@@ -171,5 +172,13 @@ while M<ModelMax+1
     % next model
     M = M +1;
 end
+
+% plot all degree variance
+title('Degree variance of each model')
+xlabel('Spherical harmonics degree','Fontsize',bb)
+ylabel('Coefficient','Fontsize',bb)
+semilogy(DV_ref,DV_base,DV_1,DV_2,DV_3);
+legend('ref','baseline', 'M1', 'M2', 'M3' ,'Location','northwest')
+grid on
 
 disp('END');
