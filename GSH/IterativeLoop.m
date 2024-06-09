@@ -17,7 +17,7 @@ ModelMax = 3;
 
 % variables
 crust_Te = 54.7e3; %range [20e3,229.5]; % elastic thickness [km]
-crustTc = 43.1e3; %range [12.5e3,162.5e3]; % mean crustal thickness [km]
+crust_Tc = 43.1e3; %range [12.5e3,162.5e3]; % mean crustal thickness [km]
 
 %% create baseline planetary model
 %% import gravity and topography model
@@ -25,14 +25,20 @@ crustTc = 43.1e3; %range [12.5e3,162.5e3]; % mean crustal thickness [km]
 % model grid
 RefModel
 
+tic;
+[V_base] = model_SH_analysis(Model);
+toc
+
 %% parameter optimisation
-Model = 1;
-while Model<ModelMax+1
+M = 0;
+while M<ModelMax+1
     % model setup
-    if Model==1
-        VAR = crustTc;
-    elseif Model ==2
-        VAR = crustTc;
+    if M==0
+        VAR = 0;
+    elseif M==1
+        VAR = crust_Tc;
+    elseif M ==2
+        VAR = crust_Tc;
     else
         VAR = crust_Te;
     end
@@ -49,33 +55,36 @@ while Model<ModelMax+1
 
         % test model for each variable
         for test=1:length(Phi_test)
-            disp(['Model ', num2str(Model), ' - ITR ', num2str(ITR), ' - test', num2str(test)]);
+            disp(['Model ', num2str(M), ' - ITR ', num2str(ITR), ' - test', num2str(test)]);
             % model crustal inversion
-            if Model==1
+            if M==0
+                Dref = crust_Tc;
+                DT = zeros("like",A);
+            elseif M==1
                 Dref = VAR;
                 DT = InversionM1(Dref,whether_to_plot,aa);
-            elseif Model ==2
+            elseif M ==2
                 % Dref = VAR; unchanged from M1
                 DT = InversionM2(Dref,whether_to_plot,aa);
             else
+                %Dref = Tc; %or use previous value opti for M1
                 Te = VAR;
                 DT = InversionM3(Dref, Te,whether_to_plot,aa);
             end
 
             % alter boundary gmt
-            %bound_M1 = matrix2gmt(A + crustal_thickness_model1,Lon,Lat);
-            %save([HOME '/GSH/Data/MercuryCrust/crust_bd_M1.gmt'],'bound_M1',"-ascii");
-            %M1 = Model;
-            %M1.l2.bound = [HOME '/GSH/Data/MercuryCrust/mantle_bd_M1.gmt'];
-            %save([HOME '/GSH/Results/' Model.name '_M1.mat'],'Model');
+            newbound = matrix2gmt(A + DT,Lon,Lat);
+            %Model.l2.bound = newbound;
+            save([HOME '/Data/MercuryCrust/mantle_bd_test.gmt'],'newbound',"-ascii");
+            Model.l2.bound = [HOME '/Data/MercuryCrust/mantle_bd_test.gmt'];
 
             % compute gravity harmonics
-            %ModelTest = load([HOME '/GSH/Results/' Model.name '_M1.mat']);
-            %tic;
-            %[V_test] = model_SH_analysis(ModelTest.Model);
-            %toc
+            tic;
+            [V_test] = model_SH_analysis(Model);
+            toc
 
             % get variance error
+            OBJ = 1;
 
             % save result
             Phi_result(end+1) = [OBJ];
@@ -93,7 +102,7 @@ while Model<ModelMax+1
     end
     
     % next model
-    Model = Model +1;
+    M = M +1;
 end
 
 disp('END');

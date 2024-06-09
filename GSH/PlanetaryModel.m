@@ -35,17 +35,20 @@ LonT = repmat(lonT,length(latT),1);
 LatT = repmat(latT',1,length(lonT));
 
 % Crust layer
-Model.l1.bound = ['/Data/MercuryCrust/crust_bd.gmt'];
-Model.l1.dens  = ['/Data/MercuryCrust/crust_rho.gmt'];
+Model.l1.bound = [HOME '/Data/MercuryCrust/crust_bd.gmt'];
+Model.l1.dens  = [HOME '/Data/MercuryCrust/crust_rho.gmt'];
 % Model.l1.dens = rho_crust./1e3;
 %visual_gmtfile(Model.l1.bound,'km','block');
 
 % Mantle layer
-Model.l2.bound = ['/Data/MercuryCrust/mantle_bd.gmt'];
-Model.l2.dens  = ['/Data/MercuryCrust/mantle_rho.gmt'];
+Model.l2.bound = [HOME '/Data/MercuryCrust/mantle_bd.gmt'];
+Model.l2.dens  = [HOME '/Data/MercuryCrust/mantle_rho.gmt'];
 % Model.l2.dens = rho_mantle./1e3;
 %visual_gmtfile(Model.l2.bound,'km','block');
 
 % % Bottom
-Model.l3.bound = ['/Data/MercuryCrust/outercore_rho.gmt'];
+Model.l3.bound = [HOME '/Data/MercuryCrust/outercore_rho.gmt'];
 
+% make gmt bound editable
+d = load(Model.l2.bound);
+[A,Lon,Lat] = gmt2matrix(d);
