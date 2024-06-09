@@ -1,8 +1,11 @@
-function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa)
+function [CM_interface] = InversionM3(D_ref, Te,whether_to_plot,aa)
     % Load RefModel (which loads PlanetaryModel)
+
     WTP = whether_to_plot;
     whether_to_plot = false;
     RefModel
+    Model.Te = Te;
+    Model.D_c = D_ref;
 %     PlanetaryModel
     whether_to_plot = WTP;
 
@@ -23,15 +26,17 @@ function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa)
 %     mapf = GSHS(sc_flex,lonT,90-latT,L);
 %     crustal_thickness_3 = crustal_thickness_2 - mapf;
 % 
-%     gmt3 = matrix2gmt(-crustal_thickness_3./1e3, LonT, LatT);
+
+    [CM_interface, lon_CM, lat_CM] = topo2crust(topo_map, Model.nmax,'Infinite_Plate', Model);
+    
+%     gmt3 = matrix2gmt(-CM_interface./1e3, LonT, LatT);
 %     filename = [HOME '\Data\Model3\crust_lower_bd_3.gmt'];
 %     writematrix(gmt3, filename, 'FileType', 'text');
-    
-    [Cm_interface, lon_CM, lat_CM] = topo2crust(topo_map, Model.nmax,'Infinite_Plate', Model);
+%     
     if whether_to_plot
         % Plot Airy model crustal thickness
         figure
-        imagesc(lon_CM, lat_CM, Cm_interface./1e3); cc=colorbar;
+        imagesc(lon_CM, lat_CM, CM_interface./1e3); cc=colorbar;
         title('Model 3: Airy Isostasy with Flexure Correction')
         xlabel('Longitude (\circ)','Fontsize',aa)
         ylabel('Latitude (\circ)','Fontsize',aa)
