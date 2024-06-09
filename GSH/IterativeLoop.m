@@ -19,6 +19,9 @@ ModelMax = 1;
 % store results
 objective = [];
 
+% degree variance
+
+
 % variables
 crust_Te = 54.7e3; %range [20e3,229.5]; % elastic thickness [km]
 crust_Tc = 43.1e3; %range [12.5e3,162.5e3]; % mean crustal thickness [km]
@@ -161,9 +164,9 @@ while M<ModelMax+1
     figure
     imagesc(lonT,latT,gravity_anomaly_map*1e5);cc=colorbar;
     title(['Gravity Anomaly w.r.t. g_0 of model ' num2str(M)])
-    xlabel('Longitude (\circ)','Fontsize',aa)
-    ylabel('Latitude (\circ)','Fontsize',aa)
-    ylabel(cc,'Gravitational acceleration (mGal)','Fontsize',aa)
+    xlabel('Longitude (\circ)','Fontsize',bb)
+    ylabel('Latitude (\circ)','Fontsize',bb)
+    ylabel(cc,'Gravitational acceleration (mGal)','Fontsize',bb)
 
     % next model
     M = M +1;
