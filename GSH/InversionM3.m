@@ -1,7 +1,7 @@
-function [crustal_thickness_3] = InversionM3(D_ref, Te)
+function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa)
     % Load RefModel (which loads PlanetaryModel)
     RefModel
-    crustal_thickness_2 = InversionM2(D_ref);
+    crustal_thickness_2 = InversionM2(D_ref,whether_to_plot,aa);
     
     cs3 = GSHA(topo_map, L);
     sc3 =  cs2sc(cs3);
@@ -19,10 +19,9 @@ function [crustal_thickness_3] = InversionM3(D_ref, Te)
     crustal_thickness_3 = crustal_thickness_2 - mapf;
 
     gmt3 = matrix2gmt(-crustal_thickness_3./1e3, LonT, LatT);
-    filename = 'GSH\Data\Model3\crust_lower_bd_3.gmt';
+    filename = [HOME '\Data\Model3\crust_lower_bd_3.gmt'];
     writematrix(gmt3, filename, 'FileType', 'text');
 
-    whether_to_plot = true;
     if whether_to_plot
         % Plot Airy model crustal thickness
         figure

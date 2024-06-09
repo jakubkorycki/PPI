@@ -1,4 +1,4 @@
-function [crustal_thickness_1] = InversionM1(D_ref)
+function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa)
     % Load RefModel (which loads PlanetaryModel)
     RefModel
     
@@ -8,17 +8,14 @@ function [crustal_thickness_1] = InversionM1(D_ref)
     free_air_gravity_anomaly = gravity_anomaly_map + free_air_correction;
     bouguer_anomaly = free_air_gravity_anomaly-bouguer_correction;
 
-
-
     deltaR1 = bouguer_anomaly/(2*pi*G*rho_crust);
 
     crustal_thickness_1 = D_ref + deltaR1;
 
     gmt1 = matrix2gmt(-crustal_thickness_1./1e3, LonT, LatT);
-    filename = 'GSH\Data\Model1\crust_lower_bd_1.gmt';
+    filename = [HOME '\Data\Model1\crust_lower_bd_1.gmt'];
     writematrix(gmt1, filename, 'FileType', 'text');
     
-    whether_to_plot = true;
     if whether_to_plot
 %         % Plot Bouguer Correction
 %         figure

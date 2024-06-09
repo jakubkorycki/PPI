@@ -1,85 +1,99 @@
-% makefile for the complete GSH circle for a particular model
 clear;
 close all;
 clc;
 
-addpath('GSH\')
-addpath('GSH\Data')
-addpath('GSH\Tools')
-addpath('GSH\Results')
-
+addpath('\Tools\')
 HOME = pwd;
 
-% Model
-% Load previous saved model
+%% iteration setup
+% plot parameters
+aa=24;
+whether_to_plot = false;
 
-%model_name = 'Crust01_crust';
-%load(model_name);
+% numerical parameters
+Dr = 10e3; % km
+ITRmax = 0;
+ModelMax = 3;
 
-% Construct new model
-disp("Planetary Model");
-ModelFit_bd = 0;
-PlanetaryModel
+% variables
+crust_Te = 54.7e3; %range [20e3,229.5]; % elastic thickness [km]
+crustTc = 43.1e3; %range [12.5e3,162.5e3]; % mean crustal thickness [km]
 
-%%%%%%%%%%%%%%%%%%% Computation area %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
-
-latLim =    [-89.5 89.5 1];  % [deg] min latitude, max latitude, resolution latitude (preferable similar to latitude)
-lonLim =    [-180 180 1];% [deg] min longitude, max longitude, resolution longitude (preferable similar to latitude)
-height =    0.0; % height of computation above spheroid
-SHbounds =  [0 49]; % Truncation settings: lower limit, upper limit SH-coefficients used
-
-
-lats = fliplr(latLim(1):latLim(3):latLim(2));
-lons = lonLim(1):lonLim(3):lonLim(2);
-
-%%%%%%%%%%%%%% Part that can be modified %%%%%%%%%%%%%%%%%%%%%%%
-
-%% Reference Model
-disp("Reference Model");
+%% create baseline planetary model
+%% import gravity and topography model
+% load spherical gravity harmonics and digital elevation model according to
+% model grid
 RefModel
 
-%% Global Spherical Harmonic Analysis 
+%% parameter optimisation
+Model = 1;
+while Model<ModelMax+1
+    % model setup
+    if Model==1
+        VAR = crustTc;
+    elseif Model ==2
+        VAR = crustTc;
+    else
+        VAR = crust_Te;
+    end
 
-% new
-disp("GSHA new");
-tic;
-%Model.l1.bound = [HOME '/Data/MercuryCrust/crust_bd_new.gmt'];
-[V_new] = model_SH_analysis(Model);
-toc
-save([HOME '/GSH/Results/' Model.name '_V_new.mat'],'V_new')
+    % fitting for model X
+    ITR = 0;
+    while(ITR<ITRmax+1)
+        % loop setup 
+        Phi_der = 0; % derivative of variable wrt objective function
+        Phi_test = [
+            VAR, VAR-Dr, VAR+Dr
+        ];
+        Phi_result = [];
 
-% low
-disp("GSHA low");
-tic;
-Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_low.gmt'];
-[V_low] = model_SH_analysis(Model);
-toc
+        % test model for each variable
+        for test=1:length(Phi_test)
+            disp(['Model ', num2str(Model), ' - ITR ', num2str(ITR), ' - test', num2str(test)]);
+            % model crustal inversion
+            if Model==1
+                Dref = VAR;
+                DT = InversionM1(Dref,whether_to_plot,aa);
+            elseif Model ==2
+                % Dref = VAR; unchanged from M1
+                DT = InversionM2(Dref,whether_to_plot,aa);
+            else
+                Te = VAR;
+                DT = InversionM3(Dref, Te,whether_to_plot,aa);
+            end
 
-% high
-disp("GSHA high");
-tic;
-Model.l1.bound = [HOME '/GSH/Data/MercuryCrust/crust_bd_high.gmt'];
-[V_high] = model_SH_analysis(Model);
-toc
+            % alter boundary gmt
+            %bound_M1 = matrix2gmt(A + crustal_thickness_model1,Lon,Lat);
+            %save([HOME '/GSH/Data/MercuryCrust/crust_bd_M1.gmt'],'bound_M1',"-ascii");
+            %M1 = Model;
+            %M1.l2.bound = [HOME '/GSH/Data/MercuryCrust/mantle_bd_M1.gmt'];
+            %save([HOME '/GSH/Results/' Model.name '_M1.mat'],'Model');
 
-%% Error between ModelNew and Reference
-disp("Delta V");
-V_residual = V_ref - V_new;
-V_residual(:,1:2) = V_ref(:,1:2);
+            % compute gravity harmonics
+            %ModelTest = load([HOME '/GSH/Results/' Model.name '_M1.mat']);
+            %tic;
+            %[V_test] = model_SH_analysis(ModelTest.Model);
+            %toc
 
-%% Global Spherical Harmonic Synthesis
+            % get variance error
 
-% new
-disp("GSHS model");
-tic;
-[data] = model_SH_synthesis(lonLim,latLim,height,SHbounds,V_new,Model);
-toc
-save([HOME '/GSH/Results/' Model.name '_' num2str(SHbounds(1)) '_' num2str(SHbounds(2)) '_data.mat'],'data')
+            % save result
+            Phi_result(end+1) = [OBJ];
+        end
+        
+        % compute slope of VAR wrt OBJ
+        Phi_der = (Phi_result(3)-Phi_result(2))/(2*Dr);
 
-% new
-disp("GSHS ref");
-tic;
-[data] = model_SH_synthesis(lonLim,latLim,height,SHbounds,V_new,Model);
-toc
-save([HOME '/GSH/Results/' Model.name '_' num2str(SHbounds(1)) '_' num2str(SHbounds(2)) '_data.mat'],'data')
+        % adapt variable such that OBJ error is minimized
+        dVAR = Phi_der * (1-OBJ);
+        VAR = VAR + dVAR;
+
+        % next loop
+        ITR = ITR+1;
+    end
+    
+    % next model
+    Model = Model +1;
+end
+
+disp('END');
