@@ -5,7 +5,7 @@ function [crustal_thickness_2] = InversionM2(D_ref,whether_to_plot,aa)
     RefModel
     whether_to_plot = WTP;
     
-    deltaR2 = topo_map*rho_crust/(rho_mantle-rho_crust);
+    deltaR2 = topo_map*rho_crust/(rho_mantle-rho_crust)/1000;
     crustal_thickness_2 = topo_map + D_ref + deltaR2;    
 
     gmt2 = matrix2gmt(-crustal_thickness_2./1e3, LonT, LatT);

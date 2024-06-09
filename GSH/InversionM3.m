@@ -4,8 +4,8 @@ function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa)
     whether_to_plot = false;
     RefModel
     whether_to_plot = WTP;
-    
-    crustal_thickness_2 = InversionM2(D_ref,whether_to_plot,aa);
+
+    crustal_thickness_2 = InversionM2(D_ref,whether_to_plot,aa)/1000;
     
     cs3 = GSHA(topo_map, L);
     sc3 =  cs2sc(cs3);

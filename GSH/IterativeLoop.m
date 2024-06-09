@@ -13,7 +13,7 @@ whether_to_plot = true;
 
 % numerical parameters
 Dr = 10e3; % km
-ITRmax = 5;
+ITRmax = 10;
 ModelMax = 3;
 objective = [];
 
@@ -85,18 +85,21 @@ while M<ModelMax+1
                 DT = zeros("like",A);
             elseif M==1
                 Dref = Phi_test(test);
-                DT = InversionM1(Dref,whether_to_plot,aa);
+                DT = InversionM1(Dref, whether_to_plot,aa);
+                Gain = 4*10^19;
             elseif M ==2
-                % Dref = VAR; unchanged from M1
-                DT = InversionM2(Dref,whether_to_plot,aa);
+                Dref = Phi_test(test);
+                DT = InversionM2(Dref, whether_to_plot,aa);
+                Gain = -4*10^19;
             else
-                %Dref = Tc; %or use previous value opti for M1
+                Dref = crust_Tc; %or use previous value opti for M1
                 Te = Phi_test(test);
-                DT = InversionM3(Dref, Te,whether_to_plot,aa);
+                DT = InversionM3(Dref, Te, whether_to_plot,aa);
+                Gain = -4*10^19;
             end
 
             % alter boundary gmt
-            newbound = matrix2gmt(DT/1000,Lon,Lat);
+            newbound = matrix2gmt(DT,Lon,Lat);
             %Model.l2.bound = newbound;
             save([HOME '/Data/MercuryCrust/mantle_bd_test.gmt'],'newbound',"-ascii");
             Model.l2.bound = [HOME '/Data/MercuryCrust/mantle_bd_test.gmt'];
@@ -124,7 +127,7 @@ while M<ModelMax+1
         objective(end+1)=Phi_result(3);
 
         % adapt variable such that OBJ error is minimized
-        dVAR = - Phi_der * (Phi_result(3)) * (4*10^19);
+        dVAR = - Phi_der * (Phi_result(3)) * Gain;
         VAR = VAR + dVAR;
 
         disp([Phi_result(3), Phi_der, dVAR]);
@@ -132,6 +135,9 @@ while M<ModelMax+1
         % next loop
         ITR = ITR+1;
     end
+
+    disp(['Model ' num2str(M), 'results:']);
+    disp(['SUM(DVerr)=' num2str(objective(end)) 'VAR=' num2str(VAR)]);
     
     % next model
     M = M +1;
