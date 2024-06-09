@@ -1,3 +1,5 @@
+HOME = pwd;
+
 Model = struct();
 
 % SETUP MODEL FOR MERCURY
@@ -22,6 +24,14 @@ Model.Re = R_p;
 Model.geoid = 'none';
 Model.nmax = 160; 
 Model.correct_depth = 0;
+
+% Some values to test topo2crust
+Model.Te = 30e3;
+Model.D_c = 50e3;
+Model.E = 120e9;
+Model.v = 0.5;
+Model.rho_c = rho_crust;
+Model.rho_m = rho_mantle;
 
 % Create lat/lon grid
 resolution = 1;

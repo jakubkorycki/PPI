@@ -5,7 +5,7 @@ function [crustal_thickness_2] = InversionM2(D_ref,whether_to_plot,aa)
     RefModel
     whether_to_plot = WTP;
     
-    [Cm_interface, lon_CM, lat_CM] = topo2crust(topo_map, Model.nmax,'Airy', Model);
+    [Cm_interface, lon_CM, lat_CM] = topo2crust(topo_map, Model.nmax,'Airy', RefModel);
 %     deltaR2 = topo_map*rho_crust/(rho_mantle-rho_crust)/1000;
 %     crustal_thickness_2 = topo_map + D_ref + deltaR2;    
 % 
@@ -16,7 +16,7 @@ function [crustal_thickness_2] = InversionM2(D_ref,whether_to_plot,aa)
     if whether_to_plot
         % Plot Airy model crustal thickness
         figure
-        imagesc(lon_CM, lat_CM, Cm_interface./1e3); cc=colorbar;
+        imagesc(lonT, latT, crustal_thickness_2./1e3); cc=colorbar;
         title('Model 2: Airy Isostasy')
         xlabel('Longitude (\circ)','Fontsize',aa)
         ylabel('Latitude (\circ)','Fontsize',aa)
