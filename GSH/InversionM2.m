@@ -3,7 +3,7 @@ function [crustal_thickness_2] = InversionM2(D_ref,whether_to_plot,aa)
     RefModel
     
     deltaR2 = topo_map*rho_crust/(rho_mantle-rho_crust);
-    crustal_thickness_2 = D_ref + deltaR2;    
+    crustal_thickness_2 = topo_map + D_ref + deltaR2;    
 
     gmt2 = matrix2gmt(-crustal_thickness_2./1e3, LonT, LatT);
     filename = [HOME '\Data\Model2\crust_lower_bd_2.gmt'];

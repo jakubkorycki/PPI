@@ -8,7 +8,7 @@ function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa)
     n = 1:size(sc3,1);
     
     D = 200e9*(Te)^3/(12*(1-0.5^2));
-    PHI = (1 + D/(500*2/g_ref).*(2.*(n+1)./(2*Model.Re)).^4).^(-1);
+    PHI = (1 + D/(500*g_ref).*(2.*(n+1)./(2*Model.Re)).^4).^(-1);
     
     sc_flex = zeros(size(sc3));
     for m = 1:size(sc3,2)
