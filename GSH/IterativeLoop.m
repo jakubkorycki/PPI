@@ -13,7 +13,7 @@ whether_to_plot = true;
 
 % numerical parameters
 Dr = 10e3; % km
-ITRmax = 1;
+ITRmax = 10;
 ModelMax = 3;
 
 % store results
@@ -136,7 +136,7 @@ while M<ModelMax+1
         dVAR = - Phi_der * (Phi_result(3)) * Gain;
         VAR = VAR + dVAR;
 
-        disp([Phi_result(3), Phi_der, dVAR]);
+        %disp([Phi_result(3), Phi_der, dVAR]);
 
         % next loop
         ITR = ITR+1;
@@ -164,21 +164,32 @@ while M<ModelMax+1
 
     figure
     imagesc(lonT,latT,gravity_anomaly_map*1e5);cc=colorbar;
-    title(['Gravity Anomaly w.r.t. g_0 of model ' num2str(M)])
-    xlabel('Longitude (\circ)','Fontsize',bb)
-    ylabel('Latitude (\circ)','Fontsize',bb)
-    ylabel(cc,'Gravitational acceleration (mGal)','Fontsize',bb)
+    title(['Gravity Anomaly w.r.t. g_0 of model ' num2str(M)],'Fontsize',aa)
+    xlabel('Longitude (\circ)','Fontsize',aa)
+    ylabel('Latitude (\circ)','Fontsize',aa)
+    ylabel(cc,'Gravitational acceleration (mGal)','Fontsize',aa)
 
     % next model
     M = M +1;
 end
 
 % plot all degree variance
+
+figure
+semilogy([DV_ref,DV_base,DV_1,DV_2,DV_3]);
 title('Degree variance of each model')
-xlabel('Spherical harmonics degree','Fontsize',bb)
-ylabel('Coefficient','Fontsize',bb)
-semilogy(DV_ref,DV_base,DV_1,DV_2,DV_3);
+xlabel('Spherical harmonics degree','Fontsize',aa)
+ylabel('Coefficient','Fontsize',aa)
 legend('ref','baseline', 'M1', 'M2', 'M3' ,'Location','northwest')
 grid on
+
+figure
+semilogy([DV_1-DV_ref,DV_2-DV_ref,DV_3-DV_ref]);
+title('Difference between Degree variance of each model and the measured reference')
+xlabel('Spherical harmonics degree','Fontsize',aa)
+ylabel('Delta Coefficient','Fontsize',aa)
+legend('M1', 'M2', 'M3' ,'Location','northwest')
+grid on
+
 
 disp('END');
