@@ -1,4 +1,4 @@
-function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa)
+function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa,ITR)
     % Load RefModel (which loads PlanetaryModel)
     WTP = whether_to_plot;
     whether_to_plot = false;
@@ -11,9 +11,9 @@ function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa)
     free_air_gravity_anomaly = gravity_anomaly_map + free_air_correction;
     bouguer_anomaly = free_air_gravity_anomaly-bouguer_correction;
 
-    deltaR1 = bouguer_anomaly/(2*pi*G*rho_crust)/1000;
+    deltaR1 = bouguer_anomaly/(2*pi*G*rho_crust);
 
-    crustal_thickness_1 = D_ref + deltaR1;
+    crustal_thickness_1 = (D_ref + deltaR1)/1000;
 
     gmt1 = matrix2gmt(-crustal_thickness_1./1e3, LonT, LatT);
     filename = [HOME '\Data\Model1\crust_lower_bd_1.gmt'];
@@ -41,7 +41,7 @@ function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa)
         % Plot Crustal thickness
         figure
         imagesc(lonT, latT,crustal_thickness_1./1e3); cc=colorbar;
-        title('Model 1: Bouguer Inversion')
+        title(['Model 1: Bouguer Inversion at iteration ' ITR])
         xlabel('Longitude (\circ)','Fontsize',aa)
         ylabel('Latitude (\circ)','Fontsize',aa)
         ylabel(cc,'Crustal thickness (km)','Fontsize',aa)

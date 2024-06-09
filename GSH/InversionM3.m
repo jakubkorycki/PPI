@@ -1,4 +1,4 @@
-function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa)
+function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa,ITR)
     % Load RefModel (which loads PlanetaryModel)
     WTP = whether_to_plot;
     whether_to_plot = false;
@@ -31,7 +31,7 @@ function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa)
         % Plot Airy model crustal thickness
         figure
         imagesc(lonT, latT, crustal_thickness_3./1e3); cc=colorbar;
-        title('Model 3: Airy Isostasy with Flexure Correction')
+        title(['Model 3: Airy Isostasy with Flexure Correction at iteration ' ITR])
         xlabel('Longitude (\circ)','Fontsize',aa)
         ylabel('Latitude (\circ)','Fontsize',aa)
         ylabel(cc,'Crustal thickness (km)','Fontsize',aa)
