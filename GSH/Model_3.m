@@ -18,16 +18,16 @@ Model.correct_depth = 0;
 
 % % Topo layer
 Model.l1.bound = 'crust_bd_zero.gmt';
-Model.l1.dens  = 2540;
+Model.l1.dens  = 3103.892;
 % visual_gmtfile(Model.l1.bound,'km','block');
 
 % Bath layer
 Model.l2.bound = 'GSH\Data\Model3\crust_lower_bd_3.gmt';
-Model.l2.dens  = 3350;
+Model.l2.dens  = 3239.353;
 % visual_gmtfile(Model.l2.bound,'km','block');
 
 % % Bottom
-Model.l3.bound  = -100000;
+Model.l3.bound  = -200000;
 % visual_gmtfile(Model.l3.bound,'km','block');
 
 % Save Model in .mat file for use of the new software
