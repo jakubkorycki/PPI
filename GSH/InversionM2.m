@@ -6,7 +6,7 @@ function [CM_interface] = InversionM2(D_ref,whether_to_plot,aa)
     Model.D_c = D_ref;
     whether_to_plot = WTP;
     
-    [CM_interface, lon_CM, lat_CM] = topo2crust(topo_map, Model.nmax,'Airy', Model);
+    [CM_interface, lon_CM, lat_CM] = topo2crust(topo_map, 179,'Airy', Model);
 %     deltaR2 = topo_map*rho_crust/(rho_mantle-rho_crust)/1000;
 %     crustal_thickness_2 = topo_map + D_ref + deltaR2;    
 % 

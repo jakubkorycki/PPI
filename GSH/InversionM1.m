@@ -11,7 +11,7 @@ function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa)
     free_air_gravity_anomaly = gravity_anomaly_map + free_air_correction;
     bouguer_anomaly = free_air_gravity_anomaly-bouguer_correction;
 
-    deltaR1 = bouguer_anomaly/(2*pi*G*rho_crust)/1000;
+    deltaR1 = bouguer_anomaly/(2*pi*G*rho_crust);
 
     crustal_thickness_1 = D_ref + deltaR1;
 

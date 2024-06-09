@@ -27,7 +27,7 @@ function [CM_interface] = InversionM3(D_ref, Te,whether_to_plot,aa)
 %     crustal_thickness_3 = crustal_thickness_2 - mapf;
 % 
 
-    [CM_interface, lon_CM, lat_CM] = topo2crust(topo_map, Model.nmax,'Infinite_Plate', Model);
+    [CM_interface, lon_CM, lat_CM] = topo2crust(topo_map, 179,'Infinite_Plate', Model);
     
 %     gmt3 = matrix2gmt(-CM_interface./1e3, LonT, LatT);
 %     filename = [HOME '\Data\Model3\crust_lower_bd_3.gmt'];
