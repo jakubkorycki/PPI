@@ -1,6 +1,9 @@
 function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa)
     % Load RefModel (which loads PlanetaryModel)
+    WTP = whether_to_plot;
+    whether_to_plot = false;
     RefModel
+    whether_to_plot = WTP;
     
     bouguer_correction = 2*pi*G*rho_crust*topo_map;
 %     bouguer_anomaly = gravity_anomaly_map - bouguer_correction;

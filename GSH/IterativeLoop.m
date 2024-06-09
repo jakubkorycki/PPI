@@ -9,12 +9,13 @@ addpath([HOME '\Tools\'])
 %% iteration setup
 % plot parameters
 aa=24;
-whether_to_plot = false;
+whether_to_plot = true;
 
 % numerical parameters
 Dr = 10e3; % km
 ITRmax = 5;
-ModelMax = 1;
+ModelMax = 3;
+objective = [];
 
 % variables
 crust_Te = 54.7e3; %range [20e3,229.5]; % elastic thickness [km]
@@ -62,9 +63,22 @@ while M<ModelMax+1
         disp(Phi_test);
         Phi_result = [];
 
+        if (ITR==0) | (ITR+1 == ITRmax)
+            whether_to_plot = true;
+        else
+            whether_to_plot = false;
+        end
+
         % test model for each variable
         for test=1:length(Phi_test)
             disp(['Model ', num2str(M), ' - ITR ', num2str(ITR), ' - test', num2str(test)]);
+            WTP = whether_to_plot;
+            if whether_to_plot & (test==3)
+                whether_to_plot = true;
+            else
+                whether_to_plot = false;
+            end
+
             % model crustal inversion
             if M==0
                 Dref = crust_Tc;
@@ -101,13 +115,16 @@ while M<ModelMax+1
 
             % save result
             Phi_result(end+1) = OBJ;
+
+            whether_to_plot = WTP;
         end
         
         % compute slope of VAR wrt OBJ
         Phi_der = (Phi_result(2)-Phi_result(1))/(2*Dr);
+        objective(end+1)=Phi_result(3);
 
         % adapt variable such that OBJ error is minimized
-        dVAR = Phi_der * (Phi_result(3)) * 10^18;
+        dVAR = - Phi_der * (Phi_result(3)) * (4*10^19);
         VAR = VAR + dVAR;
 
         disp([Phi_result(3), Phi_der, dVAR]);

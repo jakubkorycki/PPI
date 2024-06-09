@@ -1,6 +1,10 @@
 function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa)
     % Load RefModel (which loads PlanetaryModel)
+    WTP = whether_to_plot;
+    whether_to_plot = false;
     RefModel
+    whether_to_plot = WTP;
+    
     crustal_thickness_2 = InversionM2(D_ref,whether_to_plot,aa);
     
     cs3 = GSHA(topo_map, L);

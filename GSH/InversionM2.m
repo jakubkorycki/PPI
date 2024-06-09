@@ -1,6 +1,9 @@
 function [crustal_thickness_2] = InversionM2(D_ref,whether_to_plot,aa)
     % Load RefModel (which loads PlanetaryModel)
+    WTP = whether_to_plot;
+    whether_to_plot = false;
     RefModel
+    whether_to_plot = WTP;
     
     deltaR2 = topo_map*rho_crust/(rho_mantle-rho_crust);
     crustal_thickness_2 = topo_map + D_ref + deltaR2;    
