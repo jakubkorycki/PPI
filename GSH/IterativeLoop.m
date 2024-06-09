@@ -2,8 +2,9 @@ clear;
 close all;
 clc;
 
-addpath('\Tools\')
 HOME = pwd;
+addpath([HOME '\Tools\'])
+
 
 %% iteration setup
 % plot parameters
@@ -12,8 +13,8 @@ whether_to_plot = false;
 
 % numerical parameters
 Dr = 10e3; % km
-ITRmax = 0;
-ModelMax = 3;
+ITRmax = 5;
+ModelMax = 1;
 
 % variables
 crust_Te = 54.7e3; %range [20e3,229.5]; % elastic thickness [km]
@@ -25,12 +26,19 @@ crust_Tc = 43.1e3; %range [12.5e3,162.5e3]; % mean crustal thickness [km]
 % model grid
 RefModel
 
+% reference degree variance
+[n_ref, DV_ref] = degreeVariance(V_ref);
+
+% baseline harmonics
+disp(['Model baseline', ' - ITRmax ', num2str(ITRmax), ' - test', num2str(3)]);
 tic;
 [V_base] = model_SH_analysis(Model);
 toc
+V_base = sortrows([0 0 1 0; V_base(:, 1:4)],1);
+[n_base, DV_base] = degreeVariance(V_base);
 
 %% parameter optimisation
-M = 0;
+M = 1;
 while M<ModelMax+1
     % model setup
     if M==0
@@ -44,13 +52,14 @@ while M<ModelMax+1
     end
 
     % fitting for model X
-    ITR = 0;
+    ITR = 0;    
     while(ITR<ITRmax+1)
         % loop setup 
         Phi_der = 0; % derivative of variable wrt objective function
         Phi_test = [
-            VAR, VAR-Dr, VAR+Dr
+            VAR-Dr, VAR+Dr, VAR
         ];
+        disp(Phi_test);
         Phi_result = [];
 
         % test model for each variable
@@ -61,19 +70,19 @@ while M<ModelMax+1
                 Dref = crust_Tc;
                 DT = zeros("like",A);
             elseif M==1
-                Dref = VAR;
+                Dref = Phi_test(test);
                 DT = InversionM1(Dref,whether_to_plot,aa);
             elseif M ==2
                 % Dref = VAR; unchanged from M1
                 DT = InversionM2(Dref,whether_to_plot,aa);
             else
                 %Dref = Tc; %or use previous value opti for M1
-                Te = VAR;
+                Te = Phi_test(test);
                 DT = InversionM3(Dref, Te,whether_to_plot,aa);
             end
 
             % alter boundary gmt
-            newbound = matrix2gmt(A + DT,Lon,Lat);
+            newbound = matrix2gmt(DT/1000,Lon,Lat);
             %Model.l2.bound = newbound;
             save([HOME '/Data/MercuryCrust/mantle_bd_test.gmt'],'newbound',"-ascii");
             Model.l2.bound = [HOME '/Data/MercuryCrust/mantle_bd_test.gmt'];
@@ -84,18 +93,24 @@ while M<ModelMax+1
             toc
 
             % get variance error
-            OBJ = 1;
+            V_test = sortrows([0 0 1 0; V_test(:, 1:4)],1);
+            [n_test, DV_test] = degreeVariance(V_test);
+            
+            DVerr = DV_test - DV_ref;
+            OBJ = sum(DVerr);
 
             % save result
-            Phi_result(end+1) = [OBJ];
+            Phi_result(end+1) = OBJ;
         end
         
         % compute slope of VAR wrt OBJ
-        Phi_der = (Phi_result(3)-Phi_result(2))/(2*Dr);
+        Phi_der = (Phi_result(2)-Phi_result(1))/(2*Dr);
 
         % adapt variable such that OBJ error is minimized
-        dVAR = Phi_der * (1-OBJ);
+        dVAR = Phi_der * (Phi_result(3)) * 10^18;
         VAR = VAR + dVAR;
+
+        disp([Phi_result(3), Phi_der, dVAR]);
 
         % next loop
         ITR = ITR+1;
