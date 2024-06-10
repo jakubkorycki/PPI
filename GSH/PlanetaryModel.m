@@ -57,7 +57,7 @@ Model.l2.dens  = [HOME '/Data/MercuryCrust/mantle_rho.gmt'];
 %visual_gmtfile(Model.l2.bound,'km','block');
 
 % % Bottom
-Model.l3.bound = [HOME '/Data/MercuryCrust/outercore_rho.gmt'];
+Model.l3.bound = [HOME '/Data/MercuryCrust/outercore_bd.gmt'];
 
 % make gmt bound editable
 d = load(Model.l2.bound);

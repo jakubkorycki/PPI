@@ -13,14 +13,11 @@ whether_to_plot = true;
 
 % numerical parameters
 Dr = 10e3; % km
-ITRmax = 10;
+ITRmax = 5;
 ModelMax = 3;
 
 % store results
 objective = [];
-
-% degree variance
-
 
 % variables
 crust_Te = 54.7e3; %range [20e3,229.5]; % elastic thickness [km]
@@ -66,7 +63,6 @@ while M<ModelMax+1
         Phi_test = [
             VAR-Dr, VAR+Dr, VAR
         ];
-        disp(Phi_test);
         Phi_result = [];
 
         if (ITR==0) | (ITR+1 == ITRmax)
@@ -93,16 +89,16 @@ while M<ModelMax+1
             elseif M==1
                 Dref = Phi_test(test);
                 DT = InversionM1(Dref, whether_to_plot,aa,ITR);
-                Gain = 4*10^19;
+                Gain = 2*10^14;
             elseif M ==2
                 Dref = Phi_test(test);
                 DT = InversionM2(Dref, whether_to_plot,aa,ITR);
-                Gain = 4*10^19;
+                Gain = 2*10^14;
             else
                 %Dref = crust_Tc; %or use previous value opti for M1
                 Te = Phi_test(test);
                 DT = InversionM3(Dref, Te, whether_to_plot,aa,ITR);
-                Gain = -4*10^19;
+                Gain = 2*10^14;
             end
 
             % alter boundary gmt
@@ -122,7 +118,7 @@ while M<ModelMax+1
             [n_test, DV_test] = degreeVariance(V_test);
             
             DVerr = DV_test - DV_ref;
-            OBJ = sum(DVerr);
+            OBJ = sum(abs(DVerr));
 
             % save result
             Phi_result(end+1) = OBJ;
@@ -138,7 +134,7 @@ while M<ModelMax+1
         dVAR = - Phi_der * (Phi_result(3)) * Gain;
         VAR = VAR + dVAR;
 
-        %disp([Phi_result(3), Phi_der, dVAR]);
+        disp([Phi_result(3), Phi_der, dVAR]);
 
         % next loop
         ITR = ITR+1;
