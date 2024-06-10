@@ -39,6 +39,7 @@ RefModel
 disp(['Model baseline', ' - ITRmax ', num2str(ITRmax), ' - test', num2str(3)]);
 tic;
 [V_base] = model_SH_analysis(Model);
+V_base(1, 3) = 0;
 toc
 V_base = sortrows([0 0 1 0; V_base(:, 1:4)],1);
 [n_base, DV_base] = degreeVariance(V_base);
@@ -113,6 +114,7 @@ while M<ModelMax+1
             % compute gravity harmonics
             tic;
             [V_test] = model_SH_analysis(Model);
+            V_test(1, 3) = 0;
             toc
 
             % get variance error

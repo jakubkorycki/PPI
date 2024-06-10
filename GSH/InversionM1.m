@@ -40,7 +40,7 @@ function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa,ITR)
         
         % Plot Crustal thickness
         figure
-        imagesc(lonT, latT,crustal_thickness_1./1e3); cc=colorbar;
+        imagesc(lonT, latT,crustal_thickness_1); cc=colorbar;
         title(['Model 1: Bouguer Inversion at iteration ' num2str(ITR)])
         xlabel('Longitude (\circ)','Fontsize',aa)
         ylabel('Latitude (\circ)','Fontsize',aa)

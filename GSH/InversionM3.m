@@ -8,12 +8,17 @@ function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa,ITR)
 
     whether_to_plot = WTP;
     
-    cs3 = GSHA(topo_map, L);
+
+%     cs3 = GSHA(topo_map, L);
+
+    root = rho_crust/(rho_mantle-rho_crust)*topo_map;
+    
+    cs3 = GSHA(root, L);
     sc3 =  cs2sc(cs3);
     n = 1:size(sc3,1);
     
 %     D = 200e9*(Te)^3/(12*(1-0.5^2));
-    D = 120e9*(Te)^3/(12*(1-0.5^2));
+    D = 200e9*(Te)^3/(12*(1-0.5^2));
     PHI = (1 + D/((rho_mantle-rho_crust)*g_ref).*((2.*n+1)./(2*Model.Re)).^4).^(-1);
 %     PHI = (1 + D.*n.^4/((rho_mantle-rho_crust)*g_ref)).^(-1);
     sc_flex = zeros(size(sc3));
@@ -22,7 +27,7 @@ function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa,ITR)
     end
 
     mapf = GSHS(sc_flex,lonT,90-latT,L);
-    crustal_thickness_3 = crustal_thickness_2 - mapf;
+    crustal_thickness_3 = (mapf+D_ref)/1e3;
 
     gmt3 = matrix2gmt(-crustal_thickness_3./1e3, LonT, LatT);
     filename = [HOME '\Data\Model3\crust_lower_bd_3.gmt'];
@@ -31,7 +36,7 @@ function [crustal_thickness_3] = InversionM3(D_ref, Te,whether_to_plot,aa,ITR)
     if whether_to_plot
         % Plot Airy model crustal thickness
         figure
-        imagesc(lonT, latT, crustal_thickness_3./1e3); cc=colorbar;
+        imagesc(lonT, latT, crustal_thickness_3); cc=colorbar;
         title(['Model 3: Airy Isostasy with Flexure Correction at iteration ' num2str(ITR)])
         xlabel('Longitude (\circ)','Fontsize',aa)
         ylabel('Latitude (\circ)','Fontsize',aa)

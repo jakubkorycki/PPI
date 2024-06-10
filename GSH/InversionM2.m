@@ -15,7 +15,7 @@ function [crustal_thickness_2] = InversionM2(D_ref,whether_to_plot,aa,ITR)
     if whether_to_plot
         % Plot Airy model crustal thickness
         figure
-        imagesc(lonT, latT, crustal_thickness_2./1e3); cc=colorbar;
+        imagesc(lonT, latT, crustal_thickness_2); cc=colorbar;
         title(['Model 2: Airy Isostasy at iteration', num2str(ITR)])
         xlabel('Longitude (\circ)','Fontsize',aa)
         ylabel('Latitude (\circ)','Fontsize',aa)
