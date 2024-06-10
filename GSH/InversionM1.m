@@ -13,7 +13,7 @@ function [crustal_thickness_1] = InversionM1(D_ref,whether_to_plot,aa,ITR)
 
     deltaR1 = bouguer_anomaly/(2*pi*G*rho_crust);
 
-    crustal_thickness_1 = -(D_ref + deltaR1)/1000;
+    crustal_thickness_1 = (D_ref + deltaR1)/1000;
 
     gmt1 = matrix2gmt(-crustal_thickness_1./1e3, LonT, LatT);
     filename = [HOME '\Data\Model1\crust_lower_bd_1.gmt'];
