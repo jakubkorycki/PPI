@@ -13,14 +13,11 @@ whether_to_plot = true;
 
 % numerical parameters
 Dr = 10e3; % km
-ITRmax = 10;
-ModelMax = 3;
+ITRmax = 3;
+ModelMax = 1;
 
 % store results
 objective = [];
-
-% degree variance
-
 
 % variables
 crust_Te = 54.7e3; %range [20e3,229.5]; % elastic thickness [km]
@@ -92,16 +89,16 @@ while M<ModelMax+1
             elseif M==1
                 Dref = Phi_test(test);
                 DT = InversionM1(Dref, whether_to_plot,aa,ITR);
-                Gain = 4*10^19;
+                Gain = 1*10^16;
             elseif M ==2
                 Dref = Phi_test(test);
                 DT = InversionM2(Dref, whether_to_plot,aa,ITR);
-                Gain = 4*10^19;
+                Gain = 1*10^14;
             else
                 %Dref = crust_Tc; %or use previous value opti for M1
                 Te = Phi_test(test);
                 DT = InversionM3(Dref, Te, whether_to_plot,aa,ITR);
-                Gain = -4*10^19;
+                Gain = 1*10^22;
             end
 
             % alter boundary gmt
